@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
-import { Search, Dumbbell, SlidersHorizontal } from "lucide-react"
+import { Search, Dumbbell, SlidersHorizontal, Zap } from "lucide-react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -46,8 +46,12 @@ export default function ExercisesPage() {
     : t("difficulty.advanced")
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-background pt-20 pb-12 bg-noise relative">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -55,6 +59,7 @@ export default function ExercisesPage() {
         >
           <div className="flex items-center gap-3 mb-2">
             <Dumbbell className="w-6 h-6 text-emerald-400" />
+            <Zap className="w-5 h-5 text-primary animate-glow-pulse" />
             <h1 className="text-3xl font-bold text-gradient">
               {t("exercises.title")}
             </h1>
@@ -70,7 +75,7 @@ export default function ExercisesPage() {
                 placeholder={t("exercises.search")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
+                className="pl-9 violet-shadow"
               />
             </div>
             <div className="flex gap-2 overflow-x-auto scrollbar-hide">
@@ -130,14 +135,14 @@ export default function ExercisesPage() {
                 layout
               >
                 <Link href={`/exercises/${exercise.slug}`}>
-                  <Card className="glass border-glass-border hover:border-emerald-500/30 transition-all duration-300 group cursor-pointer h-full">
+                  <Card className="glass border-glass-border card-hover group cursor-pointer h-full">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                          <Dumbbell className="w-6 h-6 text-emerald-400" />
+                        <div className="w-12 h-12 rounded-xl bg-primary-10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                          <Dumbbell className="w-6 h-6 text-primary" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="font-semibold truncate group-hover:text-emerald-400 transition-colors">
+                          <h3 className="font-semibold truncate group-hover:text-primary transition-colors">
                             {exercise.name}
                           </h3>
                           <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
@@ -155,11 +160,7 @@ export default function ExercisesPage() {
                             ))}
                             <Badge
                               variant="outline"
-                              className="text-[10px] px-1.5 py-0"
-                              style={{
-                                borderColor: DIFFICULTY_COLORS[exercise.difficulty],
-                                color: DIFFICULTY_COLORS[exercise.difficulty],
-                              }}
+                              className="text-[10px] px-1.5 py-0 border-primary-60 text-primary"
                             >
                               {difficultyLabel(exercise.difficulty)}
                             </Badge>

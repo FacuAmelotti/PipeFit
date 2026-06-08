@@ -68,8 +68,12 @@ export default function ExerciseDetailPage() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="min-h-screen bg-black"
+      className="min-h-screen bg-black bg-noise relative"
     >
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+      </div>
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-900" />
         <div
@@ -82,12 +86,7 @@ export default function ExerciseDetailPage() {
           <motion.div variants={item} className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
               <Badge
-                className="text-xs px-3 py-1"
-                style={{
-                  backgroundColor: `${DIFFICULTY_COLORS[exercise.difficulty]}20`,
-                  color: DIFFICULTY_COLORS[exercise.difficulty],
-                  borderColor: `${DIFFICULTY_COLORS[exercise.difficulty]}40`,
-                }}
+                className="text-xs px-3 py-1 bg-primary-15 text-primary border-primary-30"
               >
                 {difficultyLabel(exercise.difficulty)}
               </Badge>
@@ -97,11 +96,7 @@ export default function ExerciseDetailPage() {
                   <Badge
                     key={m}
                     variant="outline"
-                    className="text-xs"
-                    style={{
-                      color: MUSCLE_COLORS[m] ?? "#71717a",
-                      borderColor: `${MUSCLE_COLORS[m] ?? "#71717a"}40`,
-                    }}
+                    className="text-xs border-primary-30 bg-primary-10"
                   >
                     {mg ? t(mg.labelKey) : m}
                   </Badge>
@@ -109,7 +104,7 @@ export default function ExerciseDetailPage() {
               })}
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient leading-tight">
               {exercise.name}
             </h1>
 
@@ -139,7 +134,7 @@ export default function ExerciseDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-lg text-zinc-200">{t("exercises.history")}</CardTitle>
                 </CardHeader>
@@ -152,7 +147,7 @@ export default function ExerciseDetailPage() {
             </motion.div>
 
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-lg text-zinc-200">{t("exercises.instructions")}</CardTitle>
                 </CardHeader>
@@ -172,7 +167,7 @@ export default function ExerciseDetailPage() {
             </motion.div>
 
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-lg text-zinc-200">{t("exercises.benefits")}</CardTitle>
                 </CardHeader>
@@ -192,7 +187,7 @@ export default function ExerciseDetailPage() {
 
           <div className="space-y-6">
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-sm text-zinc-400 font-medium">{t("exercises.equipment")}</CardTitle>
                 </CardHeader>
@@ -209,7 +204,7 @@ export default function ExerciseDetailPage() {
             </motion.div>
 
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-sm text-zinc-400 font-medium">{t("exercises.mistakes")}</CardTitle>
                 </CardHeader>
@@ -227,7 +222,7 @@ export default function ExerciseDetailPage() {
             </motion.div>
 
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-sm text-zinc-400 font-medium">{t("exercises.tips")}</CardTitle>
                 </CardHeader>
@@ -245,7 +240,7 @@ export default function ExerciseDetailPage() {
             </motion.div>
 
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-sm text-zinc-400 font-medium">{t("exercises.variations")}</CardTitle>
                 </CardHeader>
@@ -263,7 +258,7 @@ export default function ExerciseDetailPage() {
             </motion.div>
 
             <motion.div variants={item}>
-              <Card className="border-zinc-800 bg-zinc-900/60">
+              <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
                 <CardHeader>
                   <CardTitle className="text-sm text-zinc-400 font-medium">Recommended</CardTitle>
                 </CardHeader>
@@ -290,7 +285,7 @@ export default function ExerciseDetailPage() {
 
         {related.length > 0 && (
           <motion.div variants={item}>
-            <Card className="border-zinc-800 bg-zinc-900/60">
+            <Card className="border-zinc-800 bg-zinc-900/60 card-hover">
               <CardHeader>
                 <CardTitle className="text-lg text-zinc-200">{t("exercises.related")}</CardTitle>
               </CardHeader>
@@ -300,7 +295,7 @@ export default function ExerciseDetailPage() {
                     <a
                       key={ex.id}
                       href={`/exercises/${ex.slug}`}
-                      className="block rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 hover:border-zinc-700 hover:bg-zinc-800/40 transition-all group"
+                      className="block rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 card-hover group"
                     >
                       <p className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors truncate">
                         {ex.name}

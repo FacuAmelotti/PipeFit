@@ -10,25 +10,25 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--primary)] text-[var(--primary-foreground)] shadow hover:opacity-90",
+          "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-md hover:shadow-lg hover:shadow-[var(--primary)]/20 transition-all duration-300",
         primary:
-          "bg-[var(--primary)] text-[var(--primary-foreground)] shadow hover:opacity-90",
+          "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-md hover:shadow-lg hover:shadow-[var(--primary)]/20 transition-all duration-300",
         secondary:
-          "bg-[var(--secondary)] text-[var(--foreground)] shadow-sm hover:opacity-80",
+          "bg-[var(--secondary)] text-[var(--foreground)] shadow-sm hover:bg-[var(--accent)] transition-all duration-300",
         destructive:
-          "bg-[var(--destructive)] text-white shadow-sm hover:opacity-90",
+          "bg-[var(--destructive)] text-white shadow-sm hover:opacity-90 transition-all duration-300",
         outline:
-          "border border-[var(--border)] bg-transparent shadow-sm hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
+          "border border-[var(--border)] bg-transparent shadow-sm hover:bg-[var(--accent)] hover:text-[var(--foreground)] hover:border-[var(--primary)]/30 transition-all duration-300",
         ghost:
-          "hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
-        link: "text-[var(--primary)] underline-offset-4 hover:underline",
+          "hover:bg-[var(--accent)] hover:text-[var(--foreground)] transition-all duration-300",
+        link: "text-[var(--primary)] underline-offset-4 hover:underline transition-all duration-300",
       },
       size: {
-        sm: "h-8 px-3 text-xs",
-        md: "h-9 px-4 py-2",
-        lg: "h-10 px-8",
-        xl: "h-12 px-10 text-base",
-        icon: "h-9 w-9",
+        sm: "h-8 px-3 text-xs rounded-lg",
+        md: "h-10 px-5 py-2 rounded-xl",
+        lg: "h-11 px-8 rounded-xl",
+        xl: "h-13 px-10 text-base rounded-2xl",
+        icon: "h-10 w-10 rounded-xl",
       },
     },
     defaultVariants: {

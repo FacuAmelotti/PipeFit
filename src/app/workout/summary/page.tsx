@@ -22,6 +22,7 @@ import {
   X,
   ChevronRight,
   Home,
+  Zap,
 } from "lucide-react"
 import { MUSCLE_GROUPS } from "@/constants"
 import { formatDuration, formatDate } from "@/lib/utils"
@@ -38,6 +39,21 @@ const stagger = {
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+}
+
+function LightningBolt() {
+  return (
+    <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div className="absolute -left-48 -top-48 h-[600px] w-[600px] rounded-full blur-[140px]" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 4%, transparent)" }} />
+      <div className="absolute -right-48 top-1/3 h-[500px] w-[500px] rounded-full" style={{ backgroundColor: "color-mix(in srgb, #7c3aed 5%, transparent)" }} />
+      <svg className="absolute top-0 right-[10%] h-full w-auto opacity-[0.03] dark:opacity-[0.04]" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+      <svg className="absolute bottom-[20%] left-[5%] h-48 w-auto opacity-[0.02] dark:opacity-[0.03] rotate-45" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    </div>
+  )
 }
 
 export default function SummaryPage() {
@@ -86,7 +102,8 @@ export default function SummaryPage() {
   if (!summary) return null
 
   return (
-    <div className="flex flex-col flex-1 min-h-screen">
+    <div className="relative min-h-screen bg-noise">
+      <LightningBolt />
       <div className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 space-y-6">
         <motion.div
           variants={stagger}
@@ -113,6 +130,7 @@ export default function SummaryPage() {
                 >
                   <Check className="h-4 w-4 text-white" />
                 </motion.div>
+                <Zap className="absolute -bottom-2 -left-2 h-6 w-6 text-[var(--primary)] animate-glow-pulse lightning-icon" />
               </div>
             </motion.div>
             <div>
@@ -124,7 +142,7 @@ export default function SummaryPage() {
           </motion.div>
 
           <motion.div variants={fadeUp} className="text-center space-y-2">
-            <div className="text-5xl font-bold text-gradient-gold">{summary.score}</div>
+            <div className="text-5xl font-bold text-gradient">{summary.score}</div>
             <p className="text-sm text-[var(--muted-foreground)]">{t("summary.performance_score")}</p>
             <Progress value={summary.score} className="h-2 max-w-xs mx-auto" />
           </motion.div>
@@ -171,7 +189,7 @@ export default function SummaryPage() {
                 color: "text-cyan-400",
               },
             ].map((stat) => (
-              <Card key={stat.label} glass>
+              <Card key={stat.label} glass className="card-hover">
                 <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
                   <stat.icon className={cn("h-5 w-5", stat.color)} />
                   <span className="text-lg font-bold">{stat.value}</span>

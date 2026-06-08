@@ -63,6 +63,9 @@ Build a production-grade fitness web application called PipeFit with full workou
 - Tailwind CSS v4 — uses `@plugin` directives in CSS, no tailwind.config.js
 - `tailwindcss-animate` plugin loaded via `@plugin "tailwindcss-animate"` in globals.css
 - Invalid MuscleGroup values in exercises.ts were fixed (traps→shoulders, hamstrings→legs, quads→legs, core→abs, lats→back, calves→legs, obliques→abs, arms→biceps, forearms→abs, hip-flexors→abs)
+- **Design system**: Dark palette = near-black bg (#08080f) + violet primary (#a78bfa) + dark gray cards. Light = white bg + violet (#7c3aed). Lightning bolt (Zap icon) as visual motif. `bg-noise` class for subtle texture overlay. `text-gradient` for violet-purple gradient text. Helper classes for primary color opacity: `bg-primary-8/10/15`, `border-primary-30/60`, `hover:border-primary-30`.
+- **Animations**: `lightning` (random flash), `glow-pulse` (violet glow breathing), `float-violet` (smooth floating), `slide-up-fade`, `scale-bounce`, `shimmer-violet`. Classes: `animate-lightning`, `animate-glow-pulse`, `animate-float-violet`, `animate-scale-bounce`, `card-hover` (lift+glow), `lightning-border` (gradient border), `lightning-icon` (drop-shadow glow).
+- **Tailwind v4 opacity limitation**: CSS vars can't use Tailwind's `/opacity` modifier. Use `style={{ backgroundColor: "color-mix(in srgb, var(--primary) 10%, transparent)" }}` or the helper classes instead.
 
 ## Next Steps
 1. ~~Rename all references from "GymAI Planner" to "PipeFit"~~ (done)

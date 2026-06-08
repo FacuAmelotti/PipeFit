@@ -15,6 +15,8 @@ import {
   User,
   Shield,
   Info,
+  Zap,
+  Languages,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -23,6 +25,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { useProfileStore } from "@/store/profile-store"
+import { useLocaleStore } from "@/store/locale-store"
 import { useWorkoutStore } from "@/store/workout-store"
 import { useTheme } from "@/hooks/use-theme"
 import {
@@ -35,6 +38,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useTranslation } from "@/i18n"
+import { exportWorkoutDataPDF } from "@/lib/export-pdf"
 
 export default function SettingsPage() {
   const { t } = useTranslation()
@@ -46,6 +50,8 @@ export default function SettingsPage() {
   const resetProfile = useProfileStore((s) => s.resetProfile)
   const clearHistory = useWorkoutStore((s) => s.clearHistory)
   const { theme, setTheme } = useTheme()
+  const locale = useLocaleStore((s) => s.locale)
+  const setLocale = useLocaleStore((s) => s.setLocale)
 
   const [nameInput, setNameInput] = useState(profile.name)
   const [showReset, setShowReset] = useState(false)
@@ -70,8 +76,12 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-background pt-20 pb-12 bg-noise relative">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+      </div>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           variants={container}
           initial="hidden"
@@ -80,7 +90,7 @@ export default function SettingsPage() {
         >
           <motion.div variants={item}>
             <div className="flex items-center gap-3 mb-2">
-              <Settings className="w-6 h-6 text-emerald-400" />
+              <Zap className="w-6 h-6 text-primary animate-glow-pulse" />
               <h1 className="text-3xl font-bold text-gradient">{t("settings.title")}</h1>
             </div>
             <p className="text-muted-foreground ml-9">
@@ -89,7 +99,7 @@ export default function SettingsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border">
+            <Card className="glass border-glass-border card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5 text-emerald-400" />
@@ -118,7 +128,7 @@ export default function SettingsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border">
+            <Card className="glass border-glass-border card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Moon className="w-5 h-5 text-emerald-400" />
@@ -153,7 +163,39 @@ export default function SettingsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border">
+            <Card className="glass border-glass-border card-hover">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Languages className="w-5 h-5 text-primary" />
+                  {t("settings.language")}
+                </CardTitle>
+                <CardDescription>
+                  {t("settings.language_desc")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit">
+                  <Button
+                    variant={locale === "es" ? "primary" : "ghost"}
+                    size="sm"
+                    onClick={() => setLocale("es")}
+                  >
+                    ES
+                  </Button>
+                  <Button
+                    variant={locale === "en" ? "primary" : "ghost"}
+                    size="sm"
+                    onClick={() => setLocale("en")}
+                  >
+                    EN
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={item}>
+            <Card className="glass border-glass-border card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Weight className="w-5 h-5 text-emerald-400" />
@@ -223,7 +265,7 @@ export default function SettingsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border">
+            <Card className="glass border-glass-border card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   {profile.notificationsEnabled ? (
@@ -280,25 +322,14 @@ export default function SettingsPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const data = {
-                        profile: useProfileStore.getState().profile,
-                        history:
-                          useWorkoutStore.getState().workoutHistory,
-                      }
-                      const blob = new Blob(
-                        [JSON.stringify(data, null, 2)],
-                        { type: "application/json" }
-                      )
-                      const url = URL.createObjectURL(blob)
-                      const a = document.createElement("a")
-                      a.href = url
-                      a.download = `gymai-export-${
-                        new Date().toISOString().split("T")[0]
-                      }.json`
-                      a.click()
-                      URL.revokeObjectURL(url)
+                      const profile = useProfileStore.getState().profile
+                      const history = useWorkoutStore.getState().workoutHistory
+                      exportWorkoutDataPDF(profile, history)
                     }}
                   >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" fillOpacity="0.3"/>
+                    </svg>
                     {t("settings.export_json")}
                   </Button>
                 </div>
@@ -354,12 +385,13 @@ export default function SettingsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border">
+            <Card className="glass border-glass-border card-hover">
               <CardContent className="py-6">
                 <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
                   <Info className="w-4 h-4" />
                   <span>
-                    {t("settings.version")}
+                    <span className="text-gradient">PipeFit</span>
+                    {t("settings.version").replace("PipeFit", "")}
                   </span>
                 </div>
               </CardContent>

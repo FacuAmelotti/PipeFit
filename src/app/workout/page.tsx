@@ -29,11 +29,27 @@ import {
   Flag,
   ArrowLeft,
   Weight,
+  Zap,
 } from "lucide-react"
 import { MUSCLE_GROUPS, DIFFICULTY_COLORS } from "@/constants"
 import { formatDuration } from "@/lib/utils"
 import { MuscleGroup } from "@/types"
 import { useTranslation } from "@/i18n"
+
+function LightningBolt() {
+  return (
+    <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div className="absolute -left-48 -top-48 h-[600px] w-[600px] rounded-full blur-[140px]" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 4%, transparent)" }} />
+      <div className="absolute -right-48 top-1/3 h-[500px] w-[500px] rounded-full" style={{ backgroundColor: "color-mix(in srgb, #7c3aed 5%, transparent)" }} />
+      <svg className="absolute top-0 right-[10%] h-full w-auto opacity-[0.03] dark:opacity-[0.04]" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+      <svg className="absolute bottom-[20%] left-[5%] h-48 w-auto opacity-[0.02] dark:opacity-[0.03] rotate-45" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    </div>
+  )
+}
 
 export default function WorkoutPage() {
   const { t } = useTranslation()
@@ -58,12 +74,16 @@ export default function WorkoutPage() {
   const { profile } = useProfileStore()
   const [showFinishDialog, setShowFinishDialog] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => { setHydrated(true) }, [])
 
   useEffect(() => {
+    if (!hydrated) return
     if (!currentWorkout || status === "idle") {
       router.push("/")
     }
-  }, [currentWorkout, status, router])
+  }, [currentWorkout, status, router, hydrated])
 
   useEffect(() => {
     if (status === "completed") {
@@ -108,7 +128,8 @@ export default function WorkoutPage() {
   const isLast = exIndex === totalEx - 1
 
   return (
-    <div className="flex flex-col flex-1 min-h-screen">
+    <div className="relative min-h-screen bg-noise">
+      <LightningBolt />
       <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 space-y-5">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -151,10 +172,10 @@ export default function WorkoutPage() {
             exit={{ opacity: 0, x: -40 }}
             transition={{ duration: 0.3 }}
           >
-            <Card glass className="overflow-hidden">
+            <Card glass className="overflow-hidden card-hover lightning-border">
               <div className="h-40 bg-gradient-to-br from-[var(--primary)]/20 via-emerald-900/20 to-[var(--secondary)] flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-grid-white/5" />
-                <Dumbbell className="h-14 w-14 text-[var(--primary)]/40 animate-float" />
+                <Dumbbell className="h-14 w-14 text-[var(--primary)]/40 animate-float animate-glow-pulse" />
                 <div className="absolute top-3 right-3 flex gap-1.5">
                   <Badge
                     variant={

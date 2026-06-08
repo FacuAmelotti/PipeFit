@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 import {
-  Dumbbell,
+  Zap,
   LayoutDashboard,
   History,
   BarChart3,
@@ -52,9 +52,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-16 items-center gap-2 border-b border-[var(--border)] px-6">
-          <Dumbbell className="h-6 w-6 text-[var(--primary)]" />
-          <span className="text-lg font-bold text-[var(--foreground)]">
+        <div className="flex h-16 items-center gap-2.5 border-b border-[var(--border)] px-6">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)]/10">
+            <Zap className="h-4.5 w-4.5 text-[var(--primary)]" />
+          </div>
+          <span className="text-lg font-bold text-gradient">
             PipeFit
           </span>
         </div>

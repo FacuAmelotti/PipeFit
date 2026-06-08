@@ -33,8 +33,12 @@ export default function AchievementsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-background pt-20 pb-12 bg-noise relative">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)", filter: "blur(120px)" }} />
+      </div>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           variants={container}
           initial="hidden"
@@ -43,8 +47,8 @@ export default function AchievementsPage() {
         >
           <motion.div variants={item}>
             <div className="flex items-center gap-3 mb-2">
-              <Trophy className="w-6 h-6 text-yellow-400" />
-              <h1 className="text-3xl font-bold text-gradient-gold">
+              <Zap className="w-6 h-6 text-primary animate-glow-pulse" />
+              <h1 className="text-3xl font-bold text-gradient">
                 {t("achievements.title")}
               </h1>
             </div>
@@ -54,19 +58,19 @@ export default function AchievementsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border overflow-hidden">
+            <Card className="glass border-glass-border overflow-hidden card-hover">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 via-emerald-500/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent" />
                 <CardContent className="relative p-6">
                   <div className="flex flex-col md:flex-row items-center gap-6">
                     <div className="relative">
-                      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center">
-                        <span className="text-4xl font-bold text-white">
+                      <div className="w-24 h-24 rounded-full bg-primary-15 flex items-center justify-center">
+                        <span className="text-4xl font-bold text-primary">
                           {level}
                         </span>
                       </div>
                       <div className="absolute -top-1 -right-1">
-                        <Zap className="w-6 h-6 text-yellow-400" />
+                        <Zap className="w-6 h-6 text-primary" />
                       </div>
                     </div>
                     <div className="flex-1 text-center md:text-left">
@@ -95,10 +99,10 @@ export default function AchievementsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border">
+            <Card className="glass border-glass-border card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-emerald-400" />
+                  <Award className="w-5 h-5 text-primary" />
                   {t("achievements.progress")}
                 </CardTitle>
               </CardHeader>
@@ -123,9 +127,9 @@ export default function AchievementsPage() {
             {profile.achievements.map((achievement) => (
               <Card
                 key={achievement.id}
-                className={`glass border-glass-border transition-all duration-300 ${
+                className={`glass border-glass-border card-hover transition-all duration-300 ${
                   achievement.unlocked
-                    ? "opacity-100"
+                    ? "opacity-100 lightning-border"
                     : "opacity-50"
                 }`}
               >
@@ -187,39 +191,39 @@ export default function AchievementsPage() {
           </motion.div>
 
           <motion.div variants={item}>
-            <Card className="glass border-glass-border">
+            <Card className="glass border-glass-border card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-emerald-400" />
+                  <Star className="w-5 h-5 text-primary" />
                   {t("achievements.overview")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <p className="text-2xl font-bold text-emerald-400">
+                  <div className="text-center p-3 rounded-lg bg-muted/50 card-hover">
+                    <p className="text-2xl font-bold text-primary">
                       {profile.totalWorkouts}
                     </p>
                     <p className="text-xs text-muted-foreground">{t("achievements.stats_workouts")}</p>
                   </div>
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <p className="text-2xl font-bold text-blue-400">
+                  <div className="text-center p-3 rounded-lg bg-muted/50 card-hover">
+                    <p className="text-2xl font-bold text-primary">
                       {profile.totalVolume.toLocaleString()} kg
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {t("achievements.stats_volume")}
                     </p>
                   </div>
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <p className="text-2xl font-bold text-orange-400">
+                  <div className="text-center p-3 rounded-lg bg-muted/50 card-hover">
+                    <p className="text-2xl font-bold text-primary">
                       {profile.currentStreak}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {t("achievements.stats_streak")}
                     </p>
                   </div>
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <p className="text-2xl font-bold text-purple-400">
+                  <div className="text-center p-3 rounded-lg bg-muted/50 card-hover">
+                    <p className="text-2xl font-bold text-primary">
                       {profile.totalSets}
                     </p>
                     <p className="text-xs text-muted-foreground">

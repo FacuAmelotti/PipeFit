@@ -2,7 +2,7 @@
 
 import { Workout } from "@/types"
 import { formatDate, formatDuration } from "@/lib/utils"
-import { Trophy } from "lucide-react"
+import { Trophy, Zap } from "lucide-react"
 import { MUSCLE_GROUPS } from "@/constants"
 import { useTranslation } from "@/i18n"
 
@@ -20,8 +20,9 @@ export function CertificateView({ workout, userName, quote }: CertificateViewPro
   })
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto overflow-hidden rounded-2xl border-2 border-yellow-500/50 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 p-1">
+    <div className="relative w-full max-w-3xl mx-auto overflow-hidden rounded-2xl border-2 border-yellow-500/50 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 p-1 lightning-border">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(234,179,8,0.08),transparent_70%)]" />
+      <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 text-primary/5 pointer-events-none" />
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fbbf24' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
       }} />
@@ -96,7 +97,7 @@ export function CertificateView({ workout, userName, quote }: CertificateViewPro
             {t("certificate.discipline_validation")} &mdash; {t("certificate.approved")}
           </p>
           <p className="text-zinc-700 text-xs mt-2">
-            {t("certificate.generated_by")}
+            <span className="text-gradient">{t("certificate.generated_by")}</span>
           </p>
         </div>
       </div>

@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
-import { Dumbbell, Timer, RotateCcw, ChevronRight, BarChart3, Weight } from "lucide-react"
+import { Dumbbell, Timer, RotateCcw, ChevronRight, BarChart3, Weight, Zap } from "lucide-react"
 import { MuscleGroup } from "@/types"
 import { MUSCLE_GROUPS } from "@/constants"
 import { formatDuration } from "@/lib/utils"
@@ -31,6 +31,21 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 }
 
+function LightningBolt() {
+  return (
+    <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div className="absolute -left-48 -top-48 h-[600px] w-[600px] rounded-full blur-[140px]" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 4%, transparent)" }} />
+      <div className="absolute -right-48 top-1/3 h-[500px] w-[500px] rounded-full" style={{ backgroundColor: "color-mix(in srgb, #7c3aed 5%, transparent)" }} />
+      <svg className="absolute top-0 right-[10%] h-full w-auto opacity-[0.03] dark:opacity-[0.04]" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+      <svg className="absolute bottom-[20%] left-[5%] h-48 w-auto opacity-[0.02] dark:opacity-[0.03] rotate-45" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    </div>
+  )
+}
+
 function GeneratingState() {
   const { t } = useTranslation()
   return (
@@ -41,7 +56,7 @@ function GeneratingState() {
       >
         <div className="relative">
           <div className="w-24 h-24 rounded-full border-2 border-[var(--primary)]/20 border-t-[var(--primary)] animate-spin" />
-          <Dumbbell className="absolute inset-0 m-auto h-8 w-8 text-[var(--primary)]" />
+          <Zap className="absolute inset-0 m-auto h-8 w-8 text-[var(--primary)] animate-glow-pulse lightning-icon" />
         </div>
       </motion.div>
       <div className="text-center space-y-2">
@@ -116,7 +131,8 @@ function GeneratePageContent() {
   const estimatedMin = estimatedDuration
 
   return (
-    <div className="flex flex-col flex-1 min-h-screen">
+    <div className="relative min-h-screen bg-noise">
+      <LightningBolt />
       <div className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 space-y-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -134,21 +150,21 @@ function GeneratePageContent() {
           animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-3 gap-3"
         >
-          <Card glass className="text-center py-4">
+          <Card glass className="text-center py-4 card-hover">
             <CardContent className="p-0 flex flex-col items-center gap-1">
               <Dumbbell className="h-5 w-5 text-[var(--primary)]" />
               <span className="text-2xl font-bold">{totalExercises}</span>
               <span className="text-xs text-[var(--muted-foreground)]">{t("generate.exercises")}</span>
             </CardContent>
           </Card>
-          <Card glass className="text-center py-4">
+          <Card glass className="text-center py-4 card-hover">
             <CardContent className="p-0 flex flex-col items-center gap-1">
               <Timer className="h-5 w-5 text-[var(--primary)]" />
               <span className="text-2xl font-bold">{formatDuration(estimatedMin)}</span>
               <span className="text-xs text-[var(--muted-foreground)]">{t("generate.est_time")}</span>
             </CardContent>
           </Card>
-          <Card glass className="text-center py-4">
+          <Card glass className="text-center py-4 card-hover">
             <CardContent className="p-0 flex flex-col items-center gap-1">
               <BarChart3 className="h-5 w-5 text-[var(--primary)]" />
               <span className="text-2xl font-bold">{totalSets}</span>
@@ -189,7 +205,7 @@ function GeneratePageContent() {
           <ScrollArea className="h-[50vh] pr-2 space-y-3">
             {exercises.map((we, i) => (
               <motion.div key={we.exercise.id} variants={itemVariants}>
-                <Card glass>
+                <Card glass className="card-hover">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">

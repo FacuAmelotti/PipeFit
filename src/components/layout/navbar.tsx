@@ -2,10 +2,10 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  Dumbbell,
+  Zap,
   Home,
   LayoutDashboard,
   History,
@@ -31,13 +31,29 @@ export function Navbar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const { t } = useTranslation()
+  const [activeWorkout, setActiveWorkout] = useState(false)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("gymai-workout-storage")
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        const w = parsed?.state?.currentWorkout
+        if (w && (w.status === "in-progress" || w.status === "paused")) {
+          setActiveWorkout(true)
+        }
+      } catch {}
+    }
+  }, [pathname])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[var(--glass-border)] glass">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <Dumbbell className="h-6 w-6 text-[var(--primary)]" />
-          <span className="text-lg font-bold text-[var(--foreground)]">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--primary)]/10 lightning-icon">
+            <Zap className="h-5 w-5 text-[var(--primary)]" />
+          </div>
+          <span className="text-lg font-bold text-gradient">
             PipeFit
           </span>
         </Link>
@@ -75,6 +91,18 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {activeWorkout && (
+            <Link
+              href="/workout"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-primary-10 px-3 py-1.5 text-xs font-medium text-[var(--primary)] border border-primary-30 animate-glow-pulse hover:bg-primary-15 transition-all"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--primary)] opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--primary)]" />
+              </span>
+              {t("landing.resume_cta")}
+            </Link>
+          )}
           <NotificationBell />
           <ThemeToggle />
           <Avatar size="sm" fallback="U" className="hidden md:flex" />

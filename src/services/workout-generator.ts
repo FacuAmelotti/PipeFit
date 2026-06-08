@@ -2,41 +2,36 @@ import { Exercise, MuscleGroup, WorkoutExercise, ExerciseSet } from "@/types"
 import { exerciseRepository } from "@/repositories/exercise-repository"
 import { generateId } from "@/lib/utils"
 
-type ExercisePriority = "compound" | "isolation" | "accessory"
+type ExercisePriority = "compound" | "isolation"
 
-const EXERCISE_PRIORITY: Record<string, ExercisePriority> = {}
+const COMPOUND_KEYWORDS = [
+  "deadlift", "squat", "bench press", "pull-up", "pullup",
+  "row", "overhead press", "clean", "snatch", "dip", "lunge",
+  "press de banca", "peso muerto", "sentadilla", "dominada",
+  "remo", "press militar", "cargada", "arrancada", "fondo",
+  "estocada", "zancada",
+]
+
+const ISOLATION_KEYWORDS = [
+  "curl", "extension", "fly", "raise", "pushdown", "crunch",
+  "leg raise", "plank", "apertura", "elevación", "patada",
+  "puente", "levantamiento", "elevacion",
+]
 
 function classifyExercise(exercise: Exercise): ExercisePriority {
-  const name = exercise.name.toLowerCase()
+  const nameEn = (exercise.name_en ?? exercise.name).toLowerCase()
+  const nameEs = exercise.name.toLowerCase()
   const primary = exercise.primaryMuscles
 
-  if (
-    name.includes("deadlift") ||
-    name.includes("squat") ||
-    name.includes("bench press") ||
-    name.includes("pull-up") ||
-    name.includes("row") ||
-    name.includes("overhead press") ||
-    name.includes("clean") ||
-    name.includes("snatch") ||
-    name.includes("dip") ||
-    name.includes("lunge")
-  ) {
-    return "compound"
-  }
+  const isCompound = COMPOUND_KEYWORDS.some(
+    (kw) => nameEn.includes(kw) || nameEs.includes(kw)
+  )
+  if (isCompound) return "compound"
 
-  if (
-    name.includes("curl") ||
-    name.includes("extension") ||
-    name.includes("fly") ||
-    name.includes("raise") ||
-    name.includes("pushdown") ||
-    name.includes("crunch") ||
-    name.includes("leg raise") ||
-    name.includes("plank")
-  ) {
-    return "isolation"
-  }
+  const isIsolation = ISOLATION_KEYWORDS.some(
+    (kw) => nameEn.includes(kw) || nameEs.includes(kw)
+  )
+  if (isIsolation) return "isolation"
 
   if (
     primary.includes("abs") ||
@@ -55,26 +50,16 @@ const MUSCLE_PAIRINGS: [MuscleGroup, MuscleGroup][] = [
   ["shoulders", "abs"],
 ]
 
-function isPairedGroup(group: MuscleGroup, selectedGroups: MuscleGroup[]): boolean {
+function hasPairedGroup(selectedGroups: MuscleGroup[]): boolean {
   return MUSCLE_PAIRINGS.some(
     ([a, b]) =>
       selectedGroups.includes(a) &&
-      selectedGroups.includes(b) &&
-      (group === a || group === b)
+      selectedGroups.includes(b)
   )
 }
 
-function selectExercises(
-  pool: Exercise[],
-  count: number,
-  priority: ExercisePriority,
-  usedIds: Set<string>
-): Exercise[] {
-  const available = pool.filter(
-    (e) => !usedIds.has(e.id) && classifyExercise(e) === priority
-  )
-  const shuffled = [...available].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, count)
+function pickRandom<T>(arr: T[], count: number): T[] {
+  return [...arr].sort(() => Math.random() - 0.5).slice(0, count)
 }
 
 export function generateWorkoutPlan(
@@ -85,37 +70,43 @@ export function generateWorkoutPlan(
   const usedIds = new Set<string>()
 
   const primaryGroups = [...selectedGroups]
-  const isPair = isPairedGroup(primaryGroups[0], primaryGroups)
+  const isPair = hasPairedGroup(primaryGroups)
 
-  // Phase 1: Compound exercises
-  let compoundPool = allExercises.filter(
+  const targetSize = isPair ? 8 : 6
+  const targetCompounds = isPair ? 4 : 3
+
+  // Phase 1: Compound exercises across all selected groups
+  const compoundPool = allExercises.filter(
     (e) =>
       e.primaryMuscles.some((m) => primaryGroups.includes(m)) &&
-      classifyExercise(e) === "compound"
+      classifyExercise(e) === "compound" &&
+      !usedIds.has(e.id)
   )
 
-  // Remove exercises that target secondary groups not selected
-  compoundPool = compoundPool.filter(
-    (e) =>
-      !e.secondaryMuscles.some(
-        (m) => !primaryGroups.includes(m) && m !== "abs"
-      )
+  // Try to pick 1 compound per selected group first, then fill with rest
+  const primaryGroupCompounds: Exercise[] = []
+  for (const group of primaryGroups) {
+    const groupEx = compoundPool.find(
+      (e) => e.primaryMuscles.includes(group) && !usedIds.has(e.id)
+    )
+    if (groupEx) {
+      primaryGroupCompounds.push(groupEx)
+      usedIds.add(groupEx.id)
+    }
+  }
+
+  const remainingCompounds = compoundPool.filter((e) => !usedIds.has(e.id))
+  const extraCompounds = pickRandom(
+    remainingCompounds,
+    Math.max(0, targetCompounds - primaryGroupCompounds.length)
   )
+  extraCompounds.forEach((e) => usedIds.add(e.id))
 
-  const compounds = compoundPool
-    .sort(() => Math.random() - 0.5)
-    .slice(0, isPair ? 4 : 3)
-    .filter((e) => {
-      if (usedIds.has(e.id)) return false
-      usedIds.add(e.id)
-      return true
-    })
-
-  compounds.forEach((exercise) => {
+  ;[...primaryGroupCompounds, ...extraCompounds].forEach((exercise) => {
     result.push(buildWorkoutExercise(exercise))
   })
 
-  // Phase 2: Isolation exercises for primary groups
+  // Phase 2: Isolation exercises for each selected group
   for (const group of primaryGroups) {
     const isolationPool = allExercises.filter(
       (e) =>
@@ -124,9 +115,7 @@ export function generateWorkoutPlan(
         classifyExercise(e) === "isolation"
     )
 
-    const selected = isolationPool
-      .sort(() => Math.random() - 0.5)
-      .slice(0, isPair ? 2 : 2)
+    const selected = pickRandom(isolationPool, 2)
 
     selected.forEach((exercise) => {
       usedIds.add(exercise.id)
@@ -135,16 +124,14 @@ export function generateWorkoutPlan(
   }
 
   // Phase 3: Fill remaining with any suitable exercises
-  const remainingCount = Math.max(0, 6 - result.length)
+  const remainingCount = Math.max(0, targetSize - result.length)
   const remainingPool = allExercises.filter(
     (e) =>
       !usedIds.has(e.id) &&
       e.primaryMuscles.some((m) => primaryGroups.includes(m))
   )
 
-  const fillers = remainingPool
-    .sort(() => Math.random() - 0.5)
-    .slice(0, remainingCount)
+  const fillers = pickRandom(remainingPool, remainingCount)
 
   fillers.forEach((exercise) => {
     usedIds.add(exercise.id)
@@ -174,9 +161,11 @@ function buildWorkoutExercise(exercise: Exercise): WorkoutExercise {
 }
 
 export function getEstimatedDuration(exercises: WorkoutExercise[]): number {
-  return exercises.reduce((total, ex) => {
-    const restTime = ex.exercise.recommendedRest || 90
-    const setTime = 30
-    return total + ex.sets.length * (setTime + restTime)
-  }, 0)
+  return Math.ceil(
+    exercises.reduce((totalSeconds, ex) => {
+      const restTime = ex.exercise.recommendedRest || 90
+      const setTime = 30
+      return totalSeconds + ex.sets.length * (setTime + restTime)
+    }, 0) / 60
+  )
 }

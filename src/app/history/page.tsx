@@ -60,7 +60,7 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
       className="group"
     >
       <Card
-        className="border-zinc-800 bg-zinc-900/60 cursor-pointer hover:border-zinc-700 transition-all"
+        className="border-zinc-800 bg-zinc-900/60 cursor-pointer hover:border-primary-30 transition-all card-hover"
         onClick={() => setExpanded(!expanded)}
       >
         <CardContent className="p-4 sm:p-5">
@@ -111,8 +111,7 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
                   <Badge
                     key={ml.label}
                     variant="outline"
-                    className="text-[10px] px-1.5 py-0 border-zinc-700/50"
-                    style={{ color: ml.color, borderColor: `${ml.color}40` }}
+                    className="text-[10px] px-1.5 py-0 bg-primary-10 border-primary-30 text-primary"
                   >
                     {ml.label}
                   </Badge>
@@ -197,15 +196,22 @@ export default function HistoryPage() {
   })
 
   return (
-    <div className="min-h-screen bg-black p-4 sm:p-6 lg:p-8">
+    <div className="relative min-h-screen bg-noise">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px]" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)" }} />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px]" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 3%, transparent)" }} />
+        <Zap className="absolute top-20 right-20 h-64 w-64 text-primary opacity-[0.03] rotate-12 animate-lightning" />
+        <Zap className="absolute bottom-32 left-16 h-48 w-48 text-primary opacity-[0.02] -rotate-12 animate-lightning" style={{ animationDelay: "1s" }} />
+      </div>
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="max-w-4xl mx-auto space-y-6"
+        className="relative max-w-4xl mx-auto space-y-6 p-4 sm:p-6 lg:p-8"
       >
         <motion.div variants={listItem}>
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-zinc-100 via-white to-zinc-300 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gradient inline-flex items-center gap-3">
+            <Zap className="h-8 w-8 text-primary lightning-icon" />
             {t("history.title")}
           </h1>
           <p className="text-zinc-500 mt-1 text-sm">{t("history.subtitle")}</p>
@@ -214,18 +220,20 @@ export default function HistoryPage() {
         <motion.div variants={listItem}>
           <Tabs defaultValue="all" className="w-full" onValueChange={(v) => setFilter(v as typeof filter)}>
             <TabsList className="bg-zinc-900 border border-zinc-800">
-              <TabsTrigger value="all" className="data-[state=active]:bg-zinc-800">{t("history.all")}</TabsTrigger>
-              <TabsTrigger value="week" className="data-[state=active]:bg-zinc-800">{t("history.this_week")}</TabsTrigger>
-              <TabsTrigger value="month" className="data-[state=active]:bg-zinc-800">{t("history.this_month")}</TabsTrigger>
+              <TabsTrigger value="all" className="data-[state=active]:bg-primary-10 data-[state=active]:border-primary-30 border border-transparent">{t("history.all")}</TabsTrigger>
+              <TabsTrigger value="week" className="data-[state=active]:bg-primary-10 data-[state=active]:border-primary-30 border border-transparent">{t("history.this_week")}</TabsTrigger>
+              <TabsTrigger value="month" className="data-[state=active]:bg-primary-10 data-[state=active]:border-primary-30 border border-transparent">{t("history.this_month")}</TabsTrigger>
             </TabsList>
           </Tabs>
         </motion.div>
 
         <motion.div variants={listItem}>
           {filteredWorkouts.length === 0 ? (
-            <Card className="border-zinc-800 bg-zinc-900/40">
+            <Card className="border-zinc-800 bg-zinc-900/40 card-hover">
               <CardContent className="py-16 text-center">
-                <Dumbbell className="h-12 w-12 text-zinc-700 mx-auto mb-4" />
+                <div className="animate-glow-pulse inline-flex mb-4">
+                  <Zap className="h-12 w-12 text-primary" />
+                </div>
                 <h3 className="text-lg font-semibold text-zinc-400 mb-2">
                   {t("history.empty_title")}
                 </h3>

@@ -5,7 +5,7 @@ import {
   LineChart, Line, BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts"
-import { Dumbbell, Clock, TrendingUp, Flame, Activity, ChevronRight } from "lucide-react"
+import { Dumbbell, Clock, TrendingUp, Flame, Activity, ChevronRight, Zap } from "lucide-react"
 import { useDashboard } from "@/hooks/use-dashboard"
 import { useWorkoutStore } from "@/store/workout-store"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -72,21 +72,29 @@ export default function DashboardPage() {
     },
   ]
 
-  const CHART_COLORS = ["#22c55e", "#ef4444", "#a855f7", "#f97316", "#3b82f6", "#06b6d4", "#ec4899", "#eab308", "#14b8a6"]
+  const CHART_COLORS = ["#a78bfa", "#8b5cf6", "#7c3aed", "#6d28d9", "#5b21b6", "#4c1d95", "#c084fc", "#e9d5ff", "#a78bfa"]
 
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="min-h-screen bg-black p-4 sm:p-6 lg:p-8 space-y-6"
-    >
-      <motion.div variants={item}>
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-zinc-100 via-white to-zinc-300 bg-clip-text text-transparent">
-          {t("dashboard.title")}
-        </h1>
-        <p className="text-zinc-500 mt-1 text-sm">{t("dashboard.subtitle")}</p>
-      </motion.div>
+    <div className="relative min-h-screen bg-noise">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px]" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)" }} />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px]" style={{ backgroundColor: "color-mix(in srgb, var(--primary) 3%, transparent)" }} />
+        <Zap className="absolute top-20 right-20 h-64 w-64 text-primary opacity-[0.03] rotate-12 animate-lightning" />
+        <Zap className="absolute bottom-32 left-16 h-48 w-48 text-primary opacity-[0.02] -rotate-12 animate-lightning" style={{ animationDelay: "1s" }} />
+      </div>
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="relative p-4 sm:p-6 lg:p-8 space-y-6"
+      >
+        <motion.div variants={item}>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gradient inline-flex items-center gap-3">
+            <Zap className="h-8 w-8 text-primary lightning-icon" />
+            {t("dashboard.title")}
+          </h1>
+          <p className="text-zinc-500 mt-1 text-sm">{t("dashboard.subtitle")}</p>
+        </motion.div>
 
       <motion.div
         variants={item}
@@ -97,7 +105,7 @@ export default function DashboardPage() {
           return (
             <Card
               key={stat.label}
-              className="border-zinc-800 bg-zinc-900/80 overflow-hidden relative group"
+              className="border-zinc-800 bg-zinc-900/80 overflow-hidden relative group card-hover"
             >
               <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity ${stat.bgGlow}`} />
               <CardContent className="p-5 relative z-10">
@@ -109,7 +117,7 @@ export default function DashboardPage() {
                     <Icon className="h-4 w-4 text-white" />
                   </div>
                 </div>
-                <p className="text-2xl sm:text-3xl font-bold text-white">
+                <p className="text-2xl sm:text-3xl font-bold text-white animate-scale-bounce">
                   {stat.value}
                   <span className="text-sm font-normal text-zinc-500 ml-1">
                     {stat.suffix ?? ""}
@@ -124,10 +132,10 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div variants={item} className="lg:col-span-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <Card className="border-zinc-800 bg-zinc-900/80">
+            <Card className="border-zinc-800 bg-zinc-900/80 card-hover">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm text-zinc-400 font-medium flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-blue-400" />
+                  <Activity className="h-4 w-4 text-primary" />
                   {t("dashboard.weekly_workouts")}
                 </CardTitle>
               </CardHeader>
@@ -157,10 +165,10 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-zinc-800 bg-zinc-900/80">
+            <Card className="border-zinc-800 bg-zinc-900/80 card-hover">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm text-zinc-400 font-medium flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-emerald-400" />
+                  <TrendingUp className="h-4 w-4 text-primary" />
                   {t("dashboard.monthly_volume")}
                 </CardTitle>
               </CardHeader>
@@ -170,8 +178,8 @@ export default function DashboardPage() {
                     <AreaChart data={monthlyVolume}>
                       <defs>
                         <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#22c55e" stopOpacity={0.3} />
-                          <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                          <stop offset="0%" stopColor="#a78bfa" stopOpacity={0.3} />
+                          <stop offset="100%" stopColor="#a78bfa" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
@@ -198,7 +206,7 @@ export default function DashboardPage() {
                       <Area
                         type="monotone"
                         dataKey="volume"
-                        stroke="#22c55e"
+                        stroke="#a78bfa"
                         strokeWidth={2}
                         fill="url(#volumeGradient)"
                       />
@@ -211,10 +219,10 @@ export default function DashboardPage() {
         </motion.div>
 
         <motion.div variants={item}>
-          <Card className="border-zinc-800 bg-zinc-900/80 h-full">
+          <Card className="border-zinc-800 bg-zinc-900/80 h-full card-hover">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm text-zinc-400 font-medium flex items-center gap-2">
-                <Dumbbell className="h-4 w-4 text-orange-400" />
+                <Dumbbell className="h-4 w-4 text-primary" />
                 {t("dashboard.recent_workouts")}
               </CardTitle>
             </CardHeader>
@@ -232,7 +240,7 @@ export default function DashboardPage() {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.05 }}
-                        className="flex items-center justify-between px-5 py-4 hover:bg-zinc-800/30 transition-colors group cursor-pointer"
+                        className="flex items-center justify-between px-5 py-4 hover:bg-primary-10 transition-colors group cursor-pointer card-hover"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-zinc-200 truncate">
@@ -257,10 +265,10 @@ export default function DashboardPage() {
       </div>
 
       <motion.div variants={item}>
-        <Card className="border-zinc-800 bg-zinc-900/80">
+        <Card className="border-zinc-800 bg-zinc-900/80 card-hover">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-zinc-400 font-medium flex items-center gap-2">
-              <Activity className="h-4 w-4 text-purple-400" />
+              <Activity className="h-4 w-4 text-primary" />
               {t("dashboard.muscle_breakdown")}
             </CardTitle>
             <CardDescription className="text-xs text-zinc-600">
@@ -302,5 +310,6 @@ export default function DashboardPage() {
         </Card>
       </motion.div>
     </motion.div>
+    </div>
   )
 }

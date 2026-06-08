@@ -51,16 +51,23 @@ export interface Exercise {
   id: string
   slug: string
   name: string
+  name_en: string
   description: string
+  description_en: string
   history: string
+  history_en: string
   difficulty: Difficulty
   primaryMuscles: MuscleGroup[]
   secondaryMuscles: MuscleGroup[]
   equipment: Equipment[]
   benefits: string[]
+  benefits_en: string[]
   commonMistakes: string[]
+  commonMistakes_en: string[]
   tips: string[]
+  tips_en: string[]
   variations: string[]
+  variations_en: string[]
   recommendedSets: number
   recommendedReps: string
   recommendedRest: number
@@ -68,6 +75,7 @@ export interface Exercise {
   image: string
   video: string
   instructions: string[]
+  instructions_en: string[]
 }
 
 export interface ExerciseSet {
